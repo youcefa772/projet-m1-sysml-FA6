@@ -12,9 +12,9 @@ package parkingAchats {
         /* lignes de vie */
         part def TabletteBoutique;
         part def LogicielRetrait;
-        part def ImprimanteEtiquettes;
         part def ConsigneCasiers;
-        part def TelephoneClient;
+        part def ModuleNotification;
+        part def JournalRetraits;
         part def Message;
 
         /* payloads des messages */
@@ -95,31 +95,30 @@ package parkingAchats {
         occurrence deposerAchatsS1 {
             part tabletteBoutique : TabletteBoutique;
             part logicielRetrait : LogicielRetrait;
-            part imprimanteEtiquettes : ImprimanteEtiquettes;
-            part telephoneClient : TelephoneClient;
+            part moduleNotification : ModuleNotification;
 
-            message identifier of IdentifiantClient from tabletteBoutique to logicielRetrait;
-            message creerCommande from logicielRetrait to logicielRetrait;
+            message creerCommande of IdentifiantClient from tabletteBoutique to logicielRetrait;
             message commande of Commande from logicielRetrait to tabletteBoutique;
-            message imprimer of Lot from tabletteBoutique to imprimanteEtiquettes;
-            message etiquette of Etiquette from imprimanteEtiquettes to tabletteBoutique;
             message enregistrer of Lot from tabletteBoutique to logicielRetrait;
-            message confirmer of Commande from logicielRetrait to telephoneClient;
+            message etiquette of Etiquette from logicielRetrait to tabletteBoutique;
+            message confirmer of Commande from logicielRetrait to moduleNotification;
+            message from moduleNotification to logicielRetrait;
+            message from logicielRetrait to tabletteBoutique;
         }
 
         /* deposerAchats - S2 : dépôt ajouté à une commande existante */
         occurrence deposerAchatsS2 {
             part tabletteBoutique : TabletteBoutique;
             part logicielRetrait : LogicielRetrait;
-            part imprimanteEtiquettes : ImprimanteEtiquettes;
-            part telephoneClient : TelephoneClient;
+            part moduleNotification : ModuleNotification;
 
             message identifier of IdentifiantClient from tabletteBoutique to logicielRetrait;
             message commande of Commande from logicielRetrait to tabletteBoutique;
-            message imprimer of Lot from tabletteBoutique to imprimanteEtiquettes;
-            message etiquette of Etiquette from imprimanteEtiquettes to tabletteBoutique;
             message enregistrer of Lot from tabletteBoutique to logicielRetrait;
-            message confirmer of Commande from logicielRetrait to telephoneClient;
+            message etiquette of Etiquette from logicielRetrait to tabletteBoutique;
+            message confirmer of Commande from logicielRetrait to moduleNotification;
+            message from moduleNotification to logicielRetrait;
+            message from logicielRetrait to tabletteBoutique;
         }
 
         /* retirerAchats - S1 : code invalide ou expiré */
@@ -138,13 +137,17 @@ package parkingAchats {
         occurrence retirerAchatsS2 {
             part consigneCasiers : ConsigneCasiers;
             part logicielRetrait : LogicielRetrait;
-            part telephoneClient : TelephoneClient;
+            part journalRetraits : JournalRetraits;
+            part moduleNotification : ModuleNotification;
 
             message verifier of CodeRetrait from consigneCasiers to logicielRetrait;
             message ouvrir of Casier from logicielRetrait to consigneCasiers;
-            message porteFermee from consigneCasiers to logicielRetrait;
-            message journaliser from logicielRetrait to logicielRetrait;
-            message confirmerRemise of Commande from logicielRetrait to telephoneClient;
+            message casierVide of Casier from consigneCasiers to logicielRetrait;
+            message journaliser of Commande from logicielRetrait to journalRetraits;
+            message from journalRetraits to logicielRetrait;
+            message confirmerRemise of Commande from logicielRetrait to moduleNotification;
+            message from moduleNotification to logicielRetrait;
+            message from logicielRetrait to consigneCasiers;
         }
     }
 }
