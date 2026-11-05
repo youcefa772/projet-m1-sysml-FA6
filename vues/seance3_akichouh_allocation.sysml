@@ -13,6 +13,7 @@ package allocationConseil {
     /* retrouverVehicule */
     allocate retrouverVehicule.verifierQRCode to parking.serveurCentral.superviseur;
     allocate retrouverVehicule.localiserVehicule to parking.detectionGuidage.camerasZone;
-    // afficherRefus et afficherPlaceEtChemin sont réalisées par la borne client,
-    // qui appartient au sous-système Bornes et retrait (AMROUCH) : à allouer avec lui
+    allocate retrouverVehicule.afficherRefus to parking.detectionGuidage.bornesClient;
+    allocate retrouverVehicule.afficherPlaceEtChemin to parking.detectionGuidage.bornesClient;
+   
 }

@@ -36,6 +36,13 @@ package materielDetectionGuidage {
             // port issu du message "afficher" de la séquence obtenirConseilS1
             in port affichage;
         }
+         part def BorneClient {
+            doc /* borne où le client scanne son QR code pour retrouver son véhicule */
+            // composant issu de la séquence retrouverVehiculeS1 / S2 (séance 2)
+            // le QR code part vers le serveur, l'affichage revient vers la borne
+            out port qrCode;
+            in port affichageBorne;
+        }       
     }
 
     private import materielDetectionGuidage::parts::*;
@@ -49,6 +56,7 @@ package materielDetectionGuidage {
             part lecteursPlaques : LecteurPlaque [1..*];
             part camerasZone : CameraZone [1..*];
             part panneauxLumineux : PanneauLumineux [1..*];
+            part bornesClient : BorneClient [1..*];           
         }
 
         // le serveur central est commun à tous les sous-systèmes ;
@@ -62,6 +70,8 @@ package materielDetectionGuidage {
             in port plaque;
             inout port localisation;
             out port affichage;
+            in port qrCode;
+            out port affichageBorne;            
         }
 
         // une connexion par échange identifié dans les séquences de séance 2
@@ -69,5 +79,7 @@ package materielDetectionGuidage {
         connect detectionGuidage.lecteursPlaques.plaque to serveurCentral.plaque;
         connect detectionGuidage.camerasZone.localisation to serveurCentral.localisation;
         connect serveurCentral.affichage to detectionGuidage.panneauxLumineux.affichage;
+        connect detectionGuidage.bornesClient.qrCode to serveurCentral.qrCode;
+        connect serveurCentral.affichageBorne to detectionGuidage.bornesClient.affichageBorne;       
     }
 }

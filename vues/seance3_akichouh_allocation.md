@@ -1,26 +1,29 @@
 # Séance 3 – Matrice d'allocation : Détection et guidage (AKICHOUH)
 
-| Bloc fonctionnel (séance 2) | CapteurPlace | LecteurPlaque | CameraZone | PanneauLumineux | ServeurCentral |
-| --- | :---: | :---: | :---: | :---: | :---: |
-| CapteursPlaces | X | | | | |
-| LecteurPlaques | | X | | | |
-| CamerasZone | | | X | | |
-| PanneauAffichage | | | | X | |
-| Superviseur | | | | | X |
-| ModulePrevision | | | | | X |
-| ModuleRecommandation | | | | | X |
+Allocation fonctionnelle : chaque action des flux d'actions de la séance 2 est
+affectée au composant matériel qui la réalise (code : `seance3_akichouh_allocation.sysml`).
 
-Remarque : le bloc `BorneClient` n'apparaît pas ici ; la borne appartient au
-sous-système Bornes et retrait (AMROUCH), qui l'alloue dans sa propre matrice.
+| Action (séance 2) | capteursPlaces | lecteursPlaques | camerasZone | panneauxLumineux | bornesClient | serveurCentral.superviseur | serveurCentral.modulePrevision | serveurCentral.moduleRecommandation |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| obtenirConseilStationnement.mesurerOccupation | X | | | | | | | |
+| obtenirConseilStationnement.prevoirOccupation | | | | | | | X | |
+| obtenirConseilStationnement.calculerTempsTotalParZone | | | | | | | | X |
+| obtenirConseilStationnement.recommanderZoneEtEntree | | | | | | | | X |
+| obtenirConseilStationnement.afficherRecommandation | | | | X | | | | |
+| retrouverVehicule.verifierQRCode | | | | | | X | | |
+| retrouverVehicule.afficherRefus | | | | | X | | | |
+| retrouverVehicule.localiserVehicule | | | X | | | | | |
+| retrouverVehicule.afficherPlaceEtChemin | | | | | X | | | |
 
 ## Clés de lecture
 
-Cette matrice affecte chaque bloc fonctionnel identifié dans les séquences de la
-séance 2 à un composant matériel du sous-système Détection et guidage. Une croix
-signifie que le bloc fonctionnel est réalisé par le composant de la colonne.
-Les quatre blocs liés à des équipements (capteurs, lecteurs, caméras, panneaux)
-relèvent d'une allocation structurelle, chacun sur l'équipement du même nom.
-Les trois blocs logiciels (superviseur, module de prévision, module de
-recommandation) relèvent d'une allocation de logiciel sur du matériel : ils sont
-tous hébergés par le serveur central. Chaque bloc est alloué à un seul composant,
-et aucun bloc n'est resté sans allocation.
+Cette matrice affecte chacune des neuf actions des flux d'actions de la séance 2 à un
+composant matériel du sous-système Détection et guidage. Une croix signifie que
+l'action est réalisée par le composant de la colonne. Les actions de mesure,
+d'affichage et de localisation sont réalisées par les équipements du parking
+(capteurs, panneaux, bornes, caméras), tandis que les actions de vérification, de
+prévision et de recommandation sont des traitements logiciels hébergés par le
+serveur central. Chaque action est allouée à un seul composant et aucune action n'est
+restée sans allocation. La colonne lecteursPlaques est vide : le lecteur signale
+l'arrivée du véhicule, ce qui correspond à la garde de départ du flux et non à une
+action.
