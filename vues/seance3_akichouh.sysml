@@ -54,6 +54,10 @@ package materielDetectionGuidage {
         // le serveur central est commun à tous les sous-systèmes ;
         // seuls les ports utiles à Détection et guidage sont montrés ici
         part serveurCentral : ServeurCentral {
+            part superviseur;
+            part modulePrevision;
+            part moduleRecommandation;
+
             in port occupation;
             in port plaque;
             inout port localisation;
