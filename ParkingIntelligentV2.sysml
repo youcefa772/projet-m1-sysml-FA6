@@ -3,7 +3,8 @@ package parkingIntelligentV2 {
      * Mini-projet SysML - Séance 1 : cadrage, version 2
      * Groupe : AMROUCH - AKICHOUH - ZARROUKI - CHERIF
      * Innovations : SmartFlow Predict et Shopping Assist (dossier V10),
-     * garantie d'arrivée et énergie garantie au départ (dossier V4_2).
+     * recharge apportée au véhicule et choix de la place comme au cinéma
+     * (concept Réserv'Station du binôme CHERIF - ZARROUKI).
      */
 
     package parts {
@@ -45,7 +46,7 @@ package parkingIntelligentV2 {
         part reseauElectrique : ReseauElectrique;
 
         flow consulte from conducteur to parking;
-        flow demandeGarantie from conducteur to parking;
+        flow reserve from conducteur to parking;
         flow paie from conducteur to parking;
         flow accede from employe to parking;
         flow deposeEtRetire from client to parking;
@@ -75,9 +76,10 @@ package parkingIntelligentV2 {
         actor technicien : Technicien;
 
         use case preparerVenue { ref actor conducteur; }
-        use case demanderGarantieArrivee { ref actor conducteur; }
-        use case modifierGarantie { ref actor conducteur; }
-        use case demanderEnergieGarantie { ref actor conducteurVE; }
+        use case reserverPlace { ref actor conducteur; }
+        use case modifierReservation { ref actor conducteur; }
+        use case demanderRecharge { ref actor conducteurVE; }
+        use case utiliserBorneManuelle { ref actor conducteurVE; }
         use case obtenirConseilStationnement { ref actor conducteur; }
         use case stationnerNiveauReserve { ref actor employe; }
         use case deposerAchats { ref actor client; ref actor personnelBoutique; }
@@ -110,11 +112,11 @@ package parkingIntelligentV2 {
         requirement fonctionsConseil specializes fonctions {
             doc /* conseiller le conducteur avant, à l'arrivée et au retour */
         }
-        requirement fonctionsGarantieArrivee specializes fonctions {
-            doc /* garantir au visiteur de pouvoir se garer pendant son créneau */
+        requirement fonctionsReservation specializes fonctions {
+            doc /* choisir à l'avance une place précise du niveau 2 et la trouver protégée */
         }
-        requirement fonctionsEnergie specializes fonctions {
-            doc /* garantir l'énergie demandée à l'heure de départ annoncée */
+        requirement fonctionsRecharge specializes fonctions {
+            doc /* recharger le véhicule sur sa place, sans intervention du conducteur */
         }
         requirement fonctionsAchats specializes fonctions {
             doc /* prendre en charge les achats pendant la visite */
@@ -122,16 +124,25 @@ package parkingIntelligentV2 {
 
         /* base */
         requirement controleAcces specializes fonctionsBase {
-            doc /* contrôler les entrées et sorties par lecture de plaque */
+            doc /* contrôler l'accès : ticket au niveau 1, code QR au niveau 2, carte au niveau 3 */
         }
         requirement mesureOccupation specializes fonctionsBase {
             doc /* détecter les places libres dans 98 % des cas, en 30 s */
         }
         requirement niveauEmployes specializes fonctionsBase {
-            doc /* réserver un niveau aux employés, exclu des garanties */
+            doc /* réserver le niveau 3 aux employés */
         }
-        requirement paiementUnique specializes fonctionsBase {
-            doc /* payer en une fois stationnement et énergie avant la sortie */
+        requirement tarification specializes fonctionsBase {
+            doc /* 15 min gratuites, même tarif aux niveaux 1 et 2, recharge facturée à la sortie */
+        }
+        requirement paiementApplication specializes fonctionsBase {
+            doc /* encaisser automatiquement par l'application à la sortie du niveau 2 */
+        }
+        requirement bornesManuelles specializes fonctionsBase {
+            doc /* recharger en libre-service aux bornes du niveau 1, sans réservation */
+        }
+        requirement interphone specializes fonctionsBase {
+            doc /* mettre l'usager en relation avec le poste d'exploitation */
         }
 
         /* conseil (SmartFlow Predict) */
@@ -154,38 +165,41 @@ package parkingIntelligentV2 {
             doc /* afficher à la borne la place et le chemin piéton en 5 s, 99 % justes */
         }
 
-        /* garantie d'arrivée */
-        requirement verificationCapacite specializes fonctionsGarantieArrivee {
-            doc /* n'accorder une garantie que si la capacité du créneau le permet */
+        /* réservation : je choisis ma place comme au cinéma */
+        requirement choixPlacePlan specializes fonctionsReservation {
+            doc /* afficher le plan : places libres, occupées, réservées, PMR et recharge possible */
         }
-        requirement choixProfil specializes fonctionsGarantieArrivee {
-            doc /* orienter vers une zone adaptée au profil : voiture, moto, PMR, famille */
+        requirement placeSelonDestination specializes fonctionsReservation {
+            doc /* proposer les places les plus proches de la destination déclarée */
         }
-        requirement acompteGarantie specializes fonctionsGarantieArrivee {
-            doc /* demander un acompte aux heures de pointe, gardé si non-présentation */
+        requirement plaqueDeclaree specializes fonctionsReservation {
+            doc /* déclarer la plaque du véhicule, modifiable à tout moment */
         }
-        requirement prolongationGarantie specializes fonctionsGarantieArrivee {
-            doc /* prolonger ou annuler une garantie avant la fin du créneau */
+        requirement protectionPlace specializes fonctionsReservation {
+            doc /* protéger la place jusqu'à l'arrivée du véhicule à la plaque déclarée */
         }
-        requirement liberationGarantie specializes fonctionsGarantieArrivee {
-            doc /* libérer une garantie non utilisée à la fin du créneau */
+        requirement delaiGrace specializes fonctionsReservation {
+            doc /* garder la place 30 min après l'heure prévue, puis la libérer avec 5 € de frais de non-venue */
+        }
+        requirement prolongationReservation specializes fonctionsReservation {
+            doc /* prolonger la réservation à distance */
+        }
+        requirement fideliteReservation specializes fonctionsReservation {
+            doc /* offrir 1 h de stationnement pour 10 réservations honorées */
         }
 
-        /* énergie garantie au départ */
-        requirement conversionAutonomie specializes fonctionsEnergie {
-            doc /* convertir l'autonomie demandée en km en énergie à fournir */
+        /* recharge : la recharge vient au véhicule */
+        requirement acceptationRecharge specializes fonctionsRecharge {
+            doc /* accepter l'option seulement si les 2 moyens de recharge de la ligne peuvent la faire, sinon proposer une autre ligne */
         }
-        requirement verificationPuissance specializes fonctionsEnergie {
-            doc /* confirmer seulement si la puissance du site le permet, sinon proposer une alternative */
+        requirement dureeRecharge specializes fonctionsRecharge {
+            doc /* délivrer la recharge maximale possible en 30 min au plus par véhicule */
         }
-        requirement coutConnuAvance specializes fonctionsEnergie {
-            doc /* annoncer le coût de l'énergie avant confirmation */
+        requirement reserveEnergie specializes fonctionsRecharge {
+            doc /* puiser l'énergie dans une réserve fixe par ligne, rechargée aux heures creuses */
         }
-        requirement planificationRecharge specializes fonctionsEnergie {
-            doc /* planifier les recharges sans manipulation, terminées avant la fermeture */
-        }
-        requirement notificationRecharge specializes fonctionsEnergie {
-            doc /* prévenir l'usager de la fin de charge en 1 min */
+        requirement suiviRecharge specializes fonctionsRecharge {
+            doc /* suivre l'avancement de la recharge dans l'application */
         }
 
         /* achats (Shopping Assist) */
@@ -209,16 +223,22 @@ package parkingIntelligentV2 {
         requirement reutilisationExistant specializes interactionsMaterielles {
             doc /* réutiliser capteurs, panneaux et lecteurs de plaques existants */
         }
-        requirement notificationUsager specializes interactionsMaterielles {
-            doc /* notifier par application, SMS ou écran, sans application obligatoire */
+        requirement applicationUnique specializes interactionsMaterielles {
+            doc /* réserver, suivre la recharge et payer dans une seule application */
+        }
+        requirement notificationAchats specializes interactionsMaterielles {
+            doc /* notifier les achats par application, SMS ou écran */
         }
 
         /* contraintes */
         requirement puissanceConstante specializes contraintes {
-            doc /* desservir 20 % des places sans augmenter la puissance de raccordement */
+            doc /* desservir 20 % des places de chaque ligne sans augmenter la puissance de raccordement */
         }
         requirement securiteElectrique specializes contraintes {
-            doc /* recharge ≤ 22 kVA, coupure depuis le poste d'exploitation en cas d'incendie */
+            doc /* recharge ≤ 22 kVA, 150 kVA simultanés par compartiment, coupure en cas d'incendie */
+        }
+        requirement securiteCirculation specializes contraintes {
+            doc /* le moyen de recharge ne gêne ni ne met en danger véhicules et piétons */
         }
         requirement donneesPersonnelles specializes contraintes {
             doc /* aucune localisation du véhicule sans identification valide */
@@ -227,10 +247,10 @@ package parkingIntelligentV2 {
             doc /* préserver places PMR, bornes, point de retrait et cheminements */
         }
         requirement libreChoix specializes contraintes {
-            doc /* venir sans réservation, ignorer le conseil, retirer ses achats en boutique */
+            doc /* venir sans réserver au niveau 1, ignorer le conseil, retirer ses achats en boutique */
         }
         requirement modeDegrade specializes contraintes {
-            doc /* rester utilisable en cas de panne, de retard ou de garantie intenable */
+            doc /* rester utilisable en cas de panne, de retard ou de recharge impossible */
         }
     }
 }
