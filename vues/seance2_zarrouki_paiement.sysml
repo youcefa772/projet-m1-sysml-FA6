@@ -3,9 +3,9 @@
  * Cas d'utilisation : payerEtSortir (package parkingIntelligentV2::useCases)
  * Exigences détaillées : tarification, paiementUnique, fideliteReservation,
  * protectionPlace, planTempsReel, niveauEmployes, interphone
- * Point de vue : celui du système (corrigé TD3) ; les gardes sont des attributs booléens.
+ * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences (corrigé TD4) : S1 (niveau 2, débit automatique), S5 (niveau 1, paiement
+ * Séquences : S1 (niveau 2, débit automatique), S5 (niveau 1, paiement
  * à la borne de sortie) ; les lignes de vie sont des composants du système, sans acteur.
  * Réutilise CapteursPlaces, LecteurPlaques et Superviseur (parkingConseil, AKICHOUH),
  * les composants de seance2Cherif et TicketQR (seance2CherifAcces).
