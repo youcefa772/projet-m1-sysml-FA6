@@ -3,9 +3,9 @@
  * Cas d'utilisation : reserverPlace (package parkingIntelligentV2::useCases)
  * Exigences détaillées : planTempsReel, declarationPlaque, modificationReservation,
  * liberationPlace, fideliteReservation
- * Point de vue : celui du système (corrigé TD3) ; les gardes sont des attributs booléens.
+ * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences (corrigé TD4) : scénarios S1 (réservation honorée) et S6 (non-venue) ;
+ * Séquences : scénarios S1 (réservation honorée) et S6 (non-venue) ;
  * les lignes de vie sont des composants du système, sans acteur.
  */
 package seance2Cherif {
