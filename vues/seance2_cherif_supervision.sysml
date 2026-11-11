@@ -1,0 +1,118 @@
+/*
+ * Mini-projet SysML - Séance 2 : flux d'actions et séquences (CHERIF Ayman)
+ * Cas d'utilisation : superviserExploitation (package parkingIntelligentV2::useCases)
+ * Exigences détaillées : alerteSaturation, coupureIncendie, interphone,
+ * tarification, modeDegrade
+ * Point de vue : celui du système ; les gardes sont des attributs booléens.
+ * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
+ * Séquences : S2 (incident traité par interphone), S3 (alarme incendie et coupure) ;
+ * les lignes de vie sont des composants du système, sans acteur.
+ * Réutilise Superviseur (parkingConseil, AKICHOUH), les composants de seance2Cherif,
+ * seance2Zarrouki et Interphone (seance2CherifAcces).
+ */
+package seance2CherifSupervision {
+    private import ScalarValues::Boolean;
+
+    action superviserExploitation {
+        attribute sessionOuverte : Boolean;
+        attribute alerteSaturation : Boolean;
+        attribute incidentSignale : Boolean;
+        attribute alarmeIncendie : Boolean;
+        attribute parametrageDemande : Boolean;
+        attribute finSession : Boolean;
+        attribute appelInterphone : Boolean;
+        attribute sansAppel : Boolean;
+
+        action collecterEtat;
+        action afficherTableauBord;
+        action afficherAlerteSaturation;
+        action afficherIncident;
+        action localiserIncident;
+        action mettreEnRelationInterphone;
+        action marquerIncidentPrisEnCompte;
+        action enregistrerTraitement;
+        action couperToutesCharges;
+        action confirmerCoupure;
+        action appliquerParametres;
+        merge merge0;
+        merge merge1;
+        decide decide0;
+        decide decide1;
+
+        first start;
+        succession start if sessionOuverte then merge0;
+        then collecterEtat;
+        succession collecterEtat then afficherTableauBord;
+        then decide0;
+            if alerteSaturation then afficherAlerteSaturation;
+            if incidentSignale then afficherIncident;
+            if alarmeIncendie then couperToutesCharges;
+            if parametrageDemande then appliquerParametres;
+            if finSession then done;
+        succession afficherAlerteSaturation then merge0;
+        succession couperToutesCharges then confirmerCoupure;
+        succession confirmerCoupure then merge0;
+        succession appliquerParametres then merge0;
+        succession afficherIncident then localiserIncident;
+        then decide1;
+            if appelInterphone then mettreEnRelationInterphone;
+            if sansAppel then marquerIncidentPrisEnCompte;
+        succession mettreEnRelationInterphone then merge1;
+        succession marquerIncidentPrisEnCompte then merge1;
+        succession merge1 then enregistrerTraitement;
+        succession enregistrerTraitement then merge0;
+    }
+
+    /* composants découverts lors de l'exploration des scénarios */
+    package composants {
+        part def JournalIncidents;
+        part def BorneRechargeManuelle;
+
+        /* données échangées (payloads des messages) */
+        part def TableauBord;
+        part def Incident;
+    }
+
+    package sequences {
+        private import parkingConseil::parts::Superviseur;
+        private import seance2Cherif::composants::*;
+        private import seance2Zarrouki::composants::*;
+        private import seance2CherifAcces::composants::Interphone;
+        private import seance2CherifSupervision::composants::*;
+
+        /* S2 : incident signalé par la recharge, traité par interphone */
+        occurrence superviserExploitationS2 {
+            part posteSupervision : PosteSupervision;
+            part superviseur : Superviseur;
+            part serveurReservation : ServeurReservation;
+            part gestionRecharge : GestionRecharge;
+            part interphone : Interphone;
+            part journalIncidents : JournalIncidents;
+
+            message ouvrirTableauBord from posteSupervision to superviseur;
+            message collecterEtat from superviseur to serveurReservation;
+            message etatPlaces of EtatPlaces from serveurReservation to superviseur;
+            message afficherTableauBord of TableauBord from superviseur to posteSupervision;
+            message alerte of Alerte from gestionRecharge to posteSupervision;
+            message mettreEnRelation from posteSupervision to interphone;
+            message from interphone to posteSupervision;
+            message enregistrerTraitement of Incident from posteSupervision to journalIncidents;
+            message from journalIncidents to posteSupervision;
+        }
+
+        /* S3 : alarme incendie, coupure de toutes les charges depuis le poste */
+        occurrence superviserExploitationS3 {
+            part posteSupervision : PosteSupervision;
+            part gestionRecharge : GestionRecharge;
+            part reserveEnergie : ReserveEnergie;
+            part borneRechargeManuelle : BorneRechargeManuelle;
+
+            message alarmeIncendie of Alerte from posteSupervision to gestionRecharge;
+            message couperReserve from gestionRecharge to reserveEnergie;
+            message from reserveEnergie to gestionRecharge;
+            message chargesRobotsCoupees from gestionRecharge to posteSupervision;
+            message couperBornes from posteSupervision to borneRechargeManuelle;
+            message from borneRechargeManuelle to posteSupervision;
+        }
+    }
+}
