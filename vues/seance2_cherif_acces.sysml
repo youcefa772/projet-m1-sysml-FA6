@@ -3,9 +3,9 @@
  * Cas d'utilisation : accederAuParking (package parkingIntelligentV2::useCases)
  * Exigences détaillées : controleAcces, accesNiveauReserve, protectionPlace,
  * niveauEmployes, planTempsReel, interphone
- * Point de vue : celui du système (corrigé TD3) ; les gardes sont des attributs booléens.
+ * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences (corrigé TD4) : S1 (niveau 2 nominal), S3 (plaque non reconnue),
+ * Séquences : S1 (niveau 2 nominal), S3 (plaque non reconnue),
  * S5 (employé au niveau 3) ; les lignes de vie sont des composants du système, sans acteur.
  * Réutilise LecteurPlaques et Superviseur (parkingConseil, AKICHOUH), les composants
  * de seance2Cherif et PosteSupervision (seance2Zarrouki).
