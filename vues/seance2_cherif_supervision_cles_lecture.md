@@ -32,7 +32,9 @@ Après chaque événement, à l'exception de la fin de session, le flux revient 
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Seuls S2 et S3 sont tracés : S1, S4 et S5 n'utilisent aucun composant supplémentaire. La première ligne de vie est le **poste de supervision**, sur lequel agit l'agent.
+Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les cinq scénarios S1 à S5 sont tracés. La première ligne de vie est le **poste de supervision**, sur lequel agit l'agent.
+
+**S1 – Alerte de saturation** (`superviserExploitationS1`). Après la collecte de l'état, le **module de prévision** (AKICHOUH) transmet une alerte de saturation au superviseur, qui l'affiche au poste de supervision.
 
 **S2 – Incident** (`superviserExploitationS2`)
 1. Le poste demande le tableau de bord au **superviseur**, qui collecte l'état des places auprès du **serveur de réservation**.
@@ -45,6 +47,10 @@ Seuls S2 et S3 sont tracés : S1, S4 et S5 n'utilisent aucun composant suppléme
 2. Le poste coupe aussi les **bornes de recharge manuelles** du niveau 1.
 
 Ce scénario est cohérent avec le scénario S5 de `demanderRecharge`.
+
+**S4 – Modification de la tarification** (`superviserExploitationS4`). L'agent saisit de nouveaux paramètres, que le superviseur applique au **module de paiement** avant de réafficher le tableau de bord. Les paramètres sont une nouvelle donnée échangée, `Parametres`.
+
+**S5 – Fin de session** (`superviserExploitationS5`). L'agent ferme sa session auprès du superviseur, qui en accuse réception.
 
 **Composants découverts** :
 - JournalIncidents et BorneRechargeManuelle ;

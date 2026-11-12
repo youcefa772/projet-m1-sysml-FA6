@@ -5,7 +5,7 @@
  * tarification, modeDegrade
  * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences : S2 (incident traité par interphone), S3 (alarme incendie et coupure) ;
+ * Séquences : un scénario par cheminement du flux, S1 à S5 ;
  * les lignes de vie sont des composants du système, sans acteur.
  * Réutilise Superviseur (parkingConseil, AKICHOUH), les composants de seance2Cherif,
  * seance2Zarrouki et Interphone (seance2CherifAcces).
@@ -71,15 +71,32 @@ package seance2CherifSupervision {
         /* données échangées (payloads des messages) */
         part def TableauBord;
         part def Incident;
+        part def Parametres;
     }
 
     package sequences {
         private import parkingConseil::parts::Superviseur;
+        private import parkingConseil::parts::ModulePrevision;
+        private import parkingConseil::parts::Prevision;
         private import seance2Cherif::composants::*;
         private import seance2Zarrouki::composants::*;
         private import seance2CherifAcces::composants::Interphone;
         private import seance2CherifSupervision::composants::*;
 
+        /* S1 : alerte de saturation affichée au poste */
+        occurrence superviserExploitationS1 {
+            part posteSupervision : PosteSupervision;
+            part superviseur : Superviseur;
+            part serveurReservation : ServeurReservation;
+            part modulePrevision : ModulePrevision;
+            message ouvrirTableauBord from posteSupervision to superviseur;
+            message collecterEtat from superviseur to serveurReservation;
+            message etatPlaces of EtatPlaces from serveurReservation to superviseur;
+            message afficherTableauBord of TableauBord from superviseur to posteSupervision;
+            message alerteSaturation of Prevision from modulePrevision to superviseur;
+            message afficherAlerte of Prevision from superviseur to posteSupervision;
+            message from posteSupervision to superviseur;
+        }
         /* S2 : incident signalé par la recharge, traité par interphone */
         occurrence superviserExploitationS2 {
             part posteSupervision : PosteSupervision;
@@ -113,6 +130,23 @@ package seance2CherifSupervision {
             message chargesRobotsCoupees from gestionRecharge to posteSupervision;
             message couperBornes from posteSupervision to borneRechargeManuelle;
             message from borneRechargeManuelle to posteSupervision;
+        }
+        /* S4 : modification de la tarification par l'agent */
+        occurrence superviserExploitationS4 {
+            part posteSupervision : PosteSupervision;
+            part superviseur : Superviseur;
+            part modulePaiement : ModulePaiement;
+            message modifierParametres of Parametres from posteSupervision to superviseur;
+            message appliquerTarif of Parametres from superviseur to modulePaiement;
+            message from modulePaiement to superviseur;
+            message afficherTableauBord of TableauBord from superviseur to posteSupervision;
+        }
+        /* S5 : fin de la session de supervision */
+        occurrence superviserExploitationS5 {
+            part posteSupervision : PosteSupervision;
+            part superviseur : Superviseur;
+            message fermerSession from posteSupervision to superviseur;
+            message from superviseur to posteSupervision;
         }
     }
 }

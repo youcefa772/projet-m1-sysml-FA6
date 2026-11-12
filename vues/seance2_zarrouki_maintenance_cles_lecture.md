@@ -29,7 +29,9 @@ La vue décrit, du point de vue du système, une intervention de maintenance. El
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Seuls S2 et S3 sont tracés : S1 et S4 n'utilisent aucun composant supplémentaire. La première ligne de vie est le **terminal de maintenance** du technicien.
+Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les quatre scénarios S1 à S4 sont tracés. La première ligne de vie est le **terminal de maintenance** du technicien.
+
+**S1 – Capteur remis en service** (`maintenirEquipementsS1`). Le superviseur neutralise la place et fait signaler la zone d'intervention sur le **panneau d'affichage** (AKICHOUH). Le test du capteur réussit : le technicien le remet en service, la place est rétablie et l'intervention est enregistrée dans le journal de maintenance.
 
 **S2 – Robot** (`maintenirEquipementsS2`)
 1. Le **superviseur** fournit la liste des défauts.
@@ -41,6 +43,8 @@ Seuls S2 et S3 sont tracés : S1 et S4 n'utilisent aucun composant supplémentai
 1. Le **serveur de réservation** neutralise la place sur le plan.
 2. Le test du **capteur de place** échoue.
 3. La panne est enregistrée dans le journal de maintenance.
+
+**S4 – Plusieurs équipements** (`maintenirEquipementsS4`). Après l'enregistrement d'une intervention, le terminal actualise la liste des défauts auprès du superviseur et traite l'équipement suivant comme en S1 ou S2, avant de clôturer l'intervention dans le journal.
 
 **Composants découverts**
 - TerminalMaintenance, AccesTrajetSecurise et JournalMaintenance ;

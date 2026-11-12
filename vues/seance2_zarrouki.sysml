@@ -6,8 +6,7 @@
  * coupureIncendie, paiementUnique
  * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences : S1 (recharge complète), S4 (échec de connexion),
- * S5 (alarme incendie) ; les lignes de vie sont des composants du système, sans acteur.
+ * Séquences : un scénario par cheminement du flux, S1 à S5 ; les lignes de vie sont des composants du système, sans acteur.
  * Réutilise les composants de seance2Cherif (AppReservation, ServeurReservation, BarrierePlace).
  */
 package seance2Zarrouki {
@@ -134,6 +133,38 @@ package seance2Zarrouki {
             message from appReservation to telephone;
         }
 
+        /* S2 : capacité de la ligne insuffisante, une autre ligne est proposée */
+        occurrence demanderRechargeS2 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part dialogueOption : DialogueOption;
+            part gestionRecharge : GestionRecharge;
+            part reserveEnergie : ReserveEnergie;
+            message demanderRecharge from telephone to appReservation;
+            message verifierCapacite of OptionRecharge from appReservation to gestionRecharge;
+            message consulterReserve from gestionRecharge to reserveEnergie;
+            message energieDisponible of EnergieDisponible from reserveEnergie to gestionRecharge;
+            message capaciteInsuffisante of OptionRecharge from gestionRecharge to appReservation;
+            message proposerAutreLigne of OptionRecharge from appReservation to dialogueOption;
+            message from dialogueOption to appReservation;
+        }
+        /* S3 : prix de l'option refusé par le visiteur */
+        occurrence demanderRechargeS3 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part dialogueOption : DialogueOption;
+            part gestionRecharge : GestionRecharge;
+            part reserveEnergie : ReserveEnergie;
+            message demanderRecharge from telephone to appReservation;
+            message verifierCapacite of OptionRecharge from appReservation to gestionRecharge;
+            message consulterReserve from gestionRecharge to reserveEnergie;
+            message energieDisponible of EnergieDisponible from reserveEnergie to gestionRecharge;
+            message prixOption of PrixRecharge from gestionRecharge to appReservation;
+            message afficherPrix of PrixRecharge from appReservation to dialogueOption;
+            message prixRefuse of PrixRecharge from dialogueOption to appReservation;
+            message abandonnerOption of OptionRecharge from appReservation to gestionRecharge;
+            message from gestionRecharge to appReservation;
+        }
         /* S4 : échec de la connexion automatique, l'agent est alerté */
         occurrence demanderRechargeS4 {
             part telephone : Telephone;

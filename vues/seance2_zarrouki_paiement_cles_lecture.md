@@ -35,7 +35,7 @@ Les gardes sont des attributs booléens, comme dans le corrigé du TD3. Une acti
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Seuls S1 et S5 sont tracés : les autres scénarios n'utilisent aucun composant supplémentaire. Comme dans le corrigé du TD4, aucun acteur ne figure dans les séquences.
+Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les sept scénarios S1 à S7 sont tracés ; S2 à S7 n'utilisent aucun composant supplémentaire, sauf l'interphone et le poste de supervision en S7. Comme dans le corrigé du TD4, aucun acteur ne figure dans les séquences.
 
 **S1 – Niveau 2, débit automatique** (`payerEtSortirS1`)
 1. Le **capteur de place** signale le départ au **serveur de réservation**.
@@ -44,10 +44,20 @@ Seuls S1 et S5 sont tracés : les autres scénarios n'utilisent aucun composant 
 4. Le serveur fait débiter le montant par le **module de paiement**, puis envoie le reçu à l'application.
 5. Le serveur autorise la sortie. Le superviseur ouvre alors la **barrière de sortie**.
 
+**S2 – Niveau 2, débit refusé** (`payerEtSortirS2`). Le module de paiement refuse le débit automatique. Le serveur prévient le visiteur dans l'application et transmet le montant dû au superviseur, qui l'affiche à la **borne de sortie**. Le paiement à la borne se déroule ensuite comme en S5.
+
+**S3 – Niveau 1, 15 min au plus** (`payerEtSortirS3`). Le superviseur lit le ticket QR à la borne et constate une durée gratuite : il ouvre la barrière de sortie sans paiement.
+
+**S4 – Niveau 1, ticket payé à la caisse** (`payerEtSortirS4`). Le superviseur fait vérifier le ticket par le module de paiement, qui confirme qu'il est payé, puis ouvre la barrière de sortie.
+
 **S5 – Niveau 1, paiement à la borne** (`payerEtSortirS5`)
 1. La **borne de sortie** transmet le ticket QR au superviseur, qui y affiche le montant dû.
 2. La borne fait encaisser le montant par le module de paiement.
 3. Une fois le paiement validé, le superviseur édite le reçu et ouvre la barrière de sortie.
+
+**S6 – Employé** (`payerEtSortirS6`). Le serveur de réservation identifie la plaque comme celle d'un employé : la sortie est gratuite et le superviseur ouvre la barrière.
+
+**S7 – Échec du paiement à la borne** (`payerEtSortirS7`). Le module de paiement signale l'échec au superviseur, qui met le conducteur en relation avec le poste de supervision par l'**interphone**.
 
 **Composants découverts**
 - BarriereSortie et BorneSortie ;

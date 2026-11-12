@@ -5,8 +5,7 @@
  * niveauEmployes, planTempsReel, interphone
  * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences : S1 (niveau 2 nominal), S3 (plaque non reconnue),
- * S5 (employé au niveau 3) ; les lignes de vie sont des composants du système, sans acteur.
+ * Séquences : un scénario par cheminement du flux, S1 à S6 ; les lignes de vie sont des composants du système, sans acteur.
  * Réutilise LecteurPlaques et Superviseur (parkingConseil, AKICHOUH), les composants
  * de seance2Cherif et PosteSupervision (seance2Zarrouki).
  */
@@ -128,6 +127,21 @@ package seance2CherifAcces {
             message from barrierePlace to serveurReservation;
         }
 
+        /* S2 : code QR invalide au niveau 2, assistance proposée */
+        occurrence accederAuParkingS2 {
+            part controleAccesNiveau2 : ControleAccesNiveau2;
+            part serveurReservation : ServeurReservation;
+            part appReservation : AppReservation;
+            part interphone : Interphone;
+            part posteSupervision : PosteSupervision;
+            /* entrée générale : identique à S1, non répétée */
+            message qrLu of CodeQR from controleAccesNiveau2 to serveurReservation;
+            message qrInvalide of CodeQR from serveurReservation to controleAccesNiveau2;
+            message proposerAssistance of Notification from serveurReservation to appReservation;
+            message activerInterphone from serveurReservation to interphone;
+            message appelAgent from interphone to posteSupervision;
+            message from posteSupervision to interphone;
+        }
         /* S3 : plaque non reconnue par la barrière de place, assistance proposée */
         occurrence accederAuParkingS3 {
             part barrierePlace : BarrierePlace;
@@ -146,6 +160,18 @@ package seance2CherifAcces {
             message from interphone to barrierePlace;
         }
 
+        /* S4 : visiteur sans réservation, accès libre au niveau 1 */
+        occurrence accederAuParkingS4 {
+            part lecteurPlaques : LecteurPlaques;
+            part superviseur : Superviseur;
+            part distributeurTickets : DistributeurTickets;
+            part barriereEntree : BarriereEntree;
+            message vehiculeArrive of Plaque from lecteurPlaques to superviseur;
+            message imprimerTicket of TicketQR from superviseur to distributeurTickets;
+            message ticketImprime of TicketQR from distributeurTickets to superviseur;
+            message ouvrirEntree from superviseur to barriereEntree;
+            message from barriereEntree to superviseur;
+        }
         /* S5 : employé, carte valide, accès au niveau 3 */
         occurrence accederAuParkingS5 {
             part lecteurPlaques : LecteurPlaques;
@@ -160,6 +186,16 @@ package seance2CherifAcces {
             message ouvrirEntree from superviseur to barriereEntree;
             message carteLue of CartePersonnelle from lecteurCarte to superviseur;
             message ouvrirNiveau3 from superviseur to lecteurCarte;
+            message from lecteurCarte to superviseur;
+        }
+
+        /* S6 : carte invalide, accès au niveau 3 refusé */
+        occurrence accederAuParkingS6 {
+            part lecteurCarte : LecteurCarte;
+            part superviseur : Superviseur;
+            /* entrée générale : identique à S5, non répétée */
+            message carteLue of CartePersonnelle from lecteurCarte to superviseur;
+            message refuserNiveau3 of CartePersonnelle from superviseur to lecteurCarte;
             message from lecteurCarte to superviseur;
         }
     }
