@@ -4,7 +4,7 @@ package materielDetectionGuidage {
 
     /* définitions des composants matériels et de leurs ports */
     package parts {
-        part def ParkingIntelligent;
+        public import parkingIntelligentV2::parts::ParkingIntelligent;
         part def DetectionGuidage {
             doc /* sous-système qui détecte les véhicules et guide les conducteurs */
         }

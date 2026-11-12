@@ -8,7 +8,7 @@ package verificationAchats {
     satisfy enregistrementDepot by shoppingAssist.tabletteBoutique;
     satisfy regroupementCommandes by shoppingAssist.serveur.logicielRetrait;
     satisfy notificationCommande by shoppingAssist.serveur.moduleNotification;
-    satisfy notificationAchats by shoppingAssist.serveur.moduleNotification;
+    satisfy notificationUsager by shoppingAssist.serveur.moduleNotification;
     satisfy remiseBonClient by shoppingAssist.consigneCasiers.lecteurCode;
     satisfy tracabiliteAchats by shoppingAssist.serveur.journalRetraits;
     satisfy accessibilite by shoppingAssist.consigneCasiers;
@@ -25,7 +25,7 @@ package verificationAchats {
         subject sa : ShoppingAssist;
         objective {
             verify notificationCommande;
-            verify notificationAchats;
+            verify notificationUsager;
         }
     }
     verification def TestRetrait {
