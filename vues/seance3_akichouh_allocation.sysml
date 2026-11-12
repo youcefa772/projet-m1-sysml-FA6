@@ -3,17 +3,17 @@ package allocationConseil {
     private import parkingConseil::actions::*;
     private import materielDetectionGuidage::*;
 
-    /* obtenirConseilStationnement */
-    allocate obtenirConseilStationnement.mesurerOccupation to parking.detectionGuidage.capteursPlaces;
-    allocate obtenirConseilStationnement.prevoirOccupation to parking.serveurCentral.modulePrevision;
-    allocate obtenirConseilStationnement.calculerTempsTotalParZone to parking.serveurCentral.moduleRecommandation;
-    allocate obtenirConseilStationnement.recommanderZoneEtEntree to parking.serveurCentral.moduleRecommandation;
-    allocate obtenirConseilStationnement.afficherRecommandation to parking.detectionGuidage.panneauxLumineux;
+    /* consulterConseilStationnement */
+    allocate consulterConseilStationnement.mesurerOccupation to parking.detectionGuidage.capteursPlaces;
+    allocate consulterConseilStationnement.prevoirOccupation to parking.serveurCentral.modulePrevision;
+    allocate consulterConseilStationnement.basculerModeDegrade to parking.serveurCentral.superviseur;
+    allocate consulterConseilStationnement.calculerTempsTotalParZone to parking.serveurCentral.moduleRecommandation;
+    allocate consulterConseilStationnement.recommanderZoneEtEntree to parking.serveurCentral.moduleRecommandation;
+    allocate consulterConseilStationnement.afficherRecommandation to parking.detectionGuidage.panneauxLumineux;
 
     /* retrouverVehicule */
     allocate retrouverVehicule.verifierQRCode to parking.serveurCentral.superviseur;
-    allocate retrouverVehicule.localiserVehicule to parking.detectionGuidage.camerasZone;
     allocate retrouverVehicule.afficherRefus to parking.detectionGuidage.bornesClient;
+    allocate retrouverVehicule.localiserVehicule to parking.detectionGuidage.camerasZone;
     allocate retrouverVehicule.afficherPlaceEtChemin to parking.detectionGuidage.bornesClient;
-   
 }
