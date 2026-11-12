@@ -5,7 +5,7 @@
  * liberationPlace, fideliteReservation
  * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences : scénarios S1 (réservation honorée) et S6 (non-venue) ;
+ * Séquences : un scénario par cheminement du flux, S1 à S6 ;
  * les lignes de vie sont des composants du système, sans acteur.
  */
 package seance2Cherif {
@@ -123,6 +123,80 @@ package seance2Cherif {
             message vehiculeArrive of Reservation from controleAccesNiveau2 to serveurReservation;
             message crediterPoints of Reservation from serveurReservation to compteFidelite;
             message from compteFidelite to serveurReservation;
+        }
+
+        /* S2 : place prise entre-temps, le plan est réaffiché */
+        occurrence reserverPlaceS2 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part dialoguePlan : DialoguePlan;
+            part serveurReservation : ServeurReservation;
+
+            message reserverPlace from telephone to appReservation;
+            message demanderEtatPlaces from appReservation to serveurReservation;
+            message etatPlaces of EtatPlaces from serveurReservation to appReservation;
+            message afficherPlan of EtatPlaces from appReservation to dialoguePlan;
+            message placeChoisie of Place from dialoguePlan to appReservation;
+            message verifierDisponibilite of Place from appReservation to serveurReservation;
+            message placePrise of Place from serveurReservation to appReservation;
+            message signalerIndisponible of Place from appReservation to dialoguePlan;
+            message redemanderEtatPlaces from appReservation to serveurReservation;
+            message nouvelEtat of EtatPlaces from serveurReservation to appReservation;
+            message reafficherPlan of EtatPlaces from appReservation to dialoguePlan;
+        }
+
+        /* S3 : modification de la réservation (place ou plaque) */
+        occurrence reserverPlaceS3 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part dialoguePlan : DialoguePlan;
+            part dialoguePlaque : DialoguePlaque;
+            part serveurReservation : ServeurReservation;
+            part barrierePlace : BarrierePlace;
+
+            message modifierReservation from telephone to appReservation;
+            message chargerReservation of Reservation from appReservation to serveurReservation;
+            message reservationEnCours of Reservation from serveurReservation to appReservation;
+            message afficherPlan of EtatPlaces from appReservation to dialoguePlan;
+            message placeChoisie of Place from dialoguePlan to appReservation;
+            message verifierDisponibilite of Place from appReservation to serveurReservation;
+            message placeLibre of Place from serveurReservation to appReservation;
+            message afficherPlaque of Plaque from appReservation to dialoguePlaque;
+            message plaqueValidee of Plaque from dialoguePlaque to appReservation;
+            message enregistrerModification of Reservation from appReservation to serveurReservation;
+            message programmerPlaqueAttendue of Plaque from serveurReservation to barrierePlace;
+            message confirmerReservation of Reservation from serveurReservation to appReservation;
+            message notifierConfirmation of Notification from appReservation to telephone;
+        }
+
+        /* S4 : retard signalé, maintien de la place prolongé */
+        occurrence reserverPlaceS4 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part serveurReservation : ServeurReservation;
+            part gestionDelais : GestionDelais;
+
+            message signalerRetard from telephone to appReservation;
+            message retardSignale of Reservation from appReservation to serveurReservation;
+            message prolongerMaintien of Reservation from serveurReservation to gestionDelais;
+            message from gestionDelais to serveurReservation;
+            message reservationProlongee of Reservation from serveurReservation to appReservation;
+            message notifierProlongation of Notification from appReservation to telephone;
+        }
+
+        /* S5 : annulation, la place est libérée */
+        occurrence reserverPlaceS5 {
+            part telephone : Telephone;
+            part appReservation : AppReservation;
+            part serveurReservation : ServeurReservation;
+            part barrierePlace : BarrierePlace;
+
+            message annulerReservation from telephone to appReservation;
+            message annulation of Reservation from appReservation to serveurReservation;
+            message annulerPlaqueAttendue of Plaque from serveurReservation to barrierePlace;
+            message from barrierePlace to serveurReservation;
+            message confirmerAnnulation of Reservation from serveurReservation to appReservation;
+            message notifierLiberation of Notification from appReservation to telephone;
         }
 
         /* S6 : non-venue - place libérée et frais de 5 € débités */

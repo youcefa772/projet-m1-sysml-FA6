@@ -38,16 +38,22 @@ Les gardes sont des attributs booléens, comme dans le corrigé du TD3. Une acti
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Seuls S1, S3 et S5 sont tracés : S2, S4 et S6 n'utilisent aucun composant supplémentaire. Comme dans le corrigé du TD4, aucun acteur ne figure : la première ligne de vie est l'équipement sur lequel agit le conducteur.
+Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les six scénarios S1 à S6 sont tracés ; S2, S4 et S6 n'utilisent aucun composant supplémentaire. Comme dans le corrigé du TD4, aucun acteur ne figure : la première ligne de vie est l'équipement sur lequel agit le conducteur.
 
 **S1 – Niveau 2 nominal** (`accederAuParkingS1`)
 1. Le **lecteur de plaques** signale l'arrivée au **superviseur**, qui fait imprimer le ticket par le **distributeur de tickets** et ouvre la **barrière d'entrée**.
 2. Au niveau 2, le **contrôle d'accès** transmet le QR lu au **serveur de réservation**, qui ouvre l'accès et guide le conducteur par l'**application**.
 3. La **barrière de place** transmet la plaque lue. Le serveur la fait abaisser et met à jour le plan.
 
+**S2 – QR invalide** (`accederAuParkingS2`). Le serveur de réservation rejette le code QR lu par le contrôle d'accès du niveau 2, qui reste fermé. Comme en S3, il propose l'assistance dans l'application et active l'**interphone** vers le poste de supervision.
+
 **S3 – Plaque non reconnue** (`accederAuParkingS3`) : le serveur maintient la barrière levée, propose l'assistance dans l'application et active l'**interphone**, qui met le conducteur en relation avec le **poste de supervision**.
 
+**S4 – Niveau 1** (`accederAuParkingS4`). L'entrée générale de S1 suffit : plaque lue, ticket QR imprimé, barrière d'entrée ouverte. Le niveau 1 est en accès libre.
+
 **S5 – Employé** (`accederAuParkingS5`) : après l'entrée, identique à S1, le **lecteur de carte** transmet la carte au superviseur, qui ouvre l'accès au niveau 3.
+
+**S6 – Carte invalide** (`accederAuParkingS6`). Après l'entrée générale, le superviseur refuse la carte lue par le **lecteur de carte**, qui reste fermé.
 
 **Composants découverts** :
 - DistributeurTickets, BarriereEntree, LecteurCarte et Interphone ;

@@ -30,7 +30,7 @@ Les gardes des transitions sont modélisées par des attributs booléens, comme 
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La première ligne de vie est l'élément sur lequel agit le visiteur, son **téléphone**, et la deuxième est le système, ici l'**application de réservation**. On ne trace que les scénarios qui font apparaître de nouveaux composants. S2 à S5 réutilisent les composants de S1, avec les mêmes messages (place prise, modification, retard, annulation) : ils ne sont donc pas représentés.
+Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La première ligne de vie est l'élément sur lequel agit le visiteur, son **téléphone**, et la deuxième est le système, ici l'**application de réservation**. Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les six scénarios S1 à S6 sont donc tracés ; S2 à S5 réutilisent les composants de S1.
 
 **S1 – Réservation honorée** (`reserverPlaceS1`)
 1. L'application demande l'état des places au **serveur de réservation** et l'affiche dans le **dialogue du plan**.
@@ -38,6 +38,14 @@ Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La 
 3. Après validation, le serveur enregistre la réservation et transmet la plaque attendue à la **barrière de place**. C'est la solution retenue pour le couple C5 : la barrière connaît la plaque à l'avance.
 4. Le serveur confirme la réservation au téléphone.
 5. À l'arrivée, le **contrôle d'accès du niveau 2** signale le véhicule au serveur, qui crédite le **compte de fidélité**.
+
+**S2 – Place prise entre-temps** (`reserverPlaceS2`). La place choisie vient d'être prise : le serveur répond `placePrise`, l'application le signale dans le dialogue du plan, redemande l'état des places et réaffiche le plan. Le visiteur choisit une autre place, comme en S1.
+
+**S3 – Modification** (`reserverPlaceS3`). L'application charge la réservation en cours auprès du serveur, puis reprend le choix de la place et de la plaque comme en S1. Le serveur enregistre la modification et transmet la nouvelle plaque attendue à la barrière de place.
+
+**S4 – Retard signalé** (`reserverPlaceS4`). Le serveur demande à la **gestion des délais** de prolonger le maintien de la place, puis l'application confirme la prolongation au visiteur.
+
+**S5 – Annulation** (`reserverPlaceS5`). Le serveur annule la plaque attendue auprès de la barrière de place, ce qui libère la place, puis l'application notifie l'annulation.
 
 **S6 – Non-venue** (`reserverPlaceS6`). Une fois la réservation enregistrée, le serveur confie la surveillance du délai de grâce à la **gestion des délais**. Quand le délai de 30 minutes est dépassé :
 1. le serveur fait débiter les 5 € de frais par le **module de paiement** ;
