@@ -25,7 +25,7 @@ Les gardes sont des attributs booléens, comme dans le corrigé du TD3. Une acti
 
 ## 2.2 Vues des séquences – clés de lecture
 
-Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La première ligne de vie est le **téléphone**, la deuxième l'**application de réservation**. Seuls S1, S4 et S5 sont tracés, car S2 et S3 n'utilisent que des composants déjà présents dans S1.
+Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La première ligne de vie est le **téléphone**, la deuxième l'**application de réservation**. Conformément au sujet, chaque cheminement du flux d'actions est décrit par une vue des séquences. Les cinq scénarios S1 à S5 sont tracés ; S2 et S3 n'utilisent que des composants déjà présents dans S1.
 
 **S1 – Recharge complète** (`demanderRechargeS1`)
 1. L'application demande à la **gestion de la recharge** de vérifier la capacité. La gestion de la recharge consulte la **réserve d'énergie**.
@@ -33,6 +33,10 @@ Comme dans le corrigé du TD4, les séquences ne représentent aucun acteur. La 
 3. Quand la **barrière de place** signale le véhicule stationné, la gestion de la recharge envoie une mission au **robot de recharge**. Celui-ci se connecte et reçoit l'énergie de la réserve.
 4. L'avancement remonte jusqu'à l'application.
 5. En fin de recharge, le robot regagne sa base. L'énergie délivrée est enregistrée sur le **serveur de réservation**, pour le paiement à la sortie.
+
+**S2 – Capacité insuffisante** (`demanderRechargeS2`). La gestion de la recharge consulte la réserve d'énergie de la ligne. L'énergie disponible ne suffit pas : l'application propose une autre ligne dans le dialogue de l'option.
+
+**S3 – Prix refusé** (`demanderRechargeS3`). La capacité est suffisante et le prix est affiché, mais le visiteur le refuse : l'application abandonne l'option auprès de la gestion de la recharge.
 
 **S4 – Échec de connexion** (`demanderRechargeS4`) : le robot signale l'échec, et la gestion de la recharge alerte le **poste de supervision**.
 

@@ -5,7 +5,7 @@
  * reserveEnergie, planTempsReel
  * Point de vue : celui du système ; les gardes sont des attributs booléens.
  * Une action sépare toujours deux nœuds de contrôle (decide / merge), comme dans le corrigé.
- * Séquences : S2 (robot, accès au trajet sécurisé), S3 (test échoué sur un capteur) ;
+ * Séquences : un scénario par cheminement du flux, S1 à S4 ;
  * les lignes de vie sont des composants du système, sans acteur.
  * Réutilise CapteursPlaces et Superviseur (parkingConseil, AKICHOUH),
  * les composants de seance2Cherif et de seance2Zarrouki.
@@ -87,10 +87,31 @@ package seance2ZarroukiMaintenance {
     package sequences {
         private import parkingConseil::parts::CapteursPlaces;
         private import parkingConseil::parts::Superviseur;
+        private import parkingConseil::parts::PanneauAffichage;
         private import seance2Cherif::composants::*;
         private import seance2Zarrouki::composants::*;
         private import seance2ZarroukiMaintenance::composants::*;
 
+        /* S1 : capteur de place remis en service après un test réussi */
+        occurrence maintenirEquipementsS1 {
+            part terminalMaintenance : TerminalMaintenance;
+            part superviseur : Superviseur;
+            part serveurReservation : ServeurReservation;
+            part panneauAffichage : PanneauAffichage;
+            part capteursPlaces : CapteursPlaces;
+            part journalMaintenance : JournalMaintenance;
+            message ouvrirIntervention from terminalMaintenance to superviseur;
+            message listeDefauts of ListeEquipements from superviseur to terminalMaintenance;
+            message mettreHorsService of Equipement from terminalMaintenance to superviseur;
+            message neutraliserPlace of Place from superviseur to serveurReservation;
+            message signalerZone of Place from superviseur to panneauAffichage;
+            message lancerTest of Equipement from terminalMaintenance to capteursPlaces;
+            message resultatTest of ResultatTest from capteursPlaces to terminalMaintenance;
+            message remettreEnService of Equipement from terminalMaintenance to superviseur;
+            message retablirPlace of Place from superviseur to serveurReservation;
+            message enregistrerIntervention of Intervention from terminalMaintenance to journalMaintenance;
+            message from journalMaintenance to terminalMaintenance;
+        }
         /* S2 : maintenance d'un robot, accès au trajet sécurisé, test réussi */
         occurrence maintenirEquipementsS2 {
             part terminalMaintenance : TerminalMaintenance;
@@ -131,6 +152,20 @@ package seance2ZarroukiMaintenance {
             message lancerTest of Equipement from terminalMaintenance to capteursPlaces;
             message resultatTest of ResultatTest from capteursPlaces to terminalMaintenance;
             message enregistrerPanne of Intervention from terminalMaintenance to journalMaintenance;
+            message from journalMaintenance to terminalMaintenance;
+        }
+        /* S4 : plusieurs équipements traités dans la même intervention */
+        occurrence maintenirEquipementsS4 {
+            part terminalMaintenance : TerminalMaintenance;
+            part superviseur : Superviseur;
+            part journalMaintenance : JournalMaintenance;
+            /* traitement de chaque équipement : identique à S1 ou S2, non répété */
+            message enregistrerIntervention of Intervention from terminalMaintenance to journalMaintenance;
+            message from journalMaintenance to terminalMaintenance;
+            message actualiserListe from terminalMaintenance to superviseur;
+            message listeDefauts of ListeEquipements from superviseur to terminalMaintenance;
+            message mettreHorsService of Equipement from terminalMaintenance to superviseur;
+            message cloturerIntervention of Intervention from terminalMaintenance to journalMaintenance;
             message from journalMaintenance to terminalMaintenance;
         }
     }
