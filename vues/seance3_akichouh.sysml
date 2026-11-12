@@ -15,13 +15,13 @@ package materielDetectionGuidage {
         part def CapteurPlace {
             doc /* capteur qui détecte si une place est libre ou occupée */
             // existe déjà dans le parking (exigence reutilisationExistant)
-            // port issu du message "occupation" de la séquence obtenirConseilS1
+            // port issu du message "occupation" de la séquence consulterConseilS1
             out port occupation;
         }
         part def LecteurPlaque {
             doc /* lecteur qui lit la plaque des véhicules à l'entrée */
             // existe déjà dans le parking (exigence reutilisationExistant)
-            // port issu du message "vehiculeArrive" de la séquence obtenirConseilS1
+            // port issu du message "vehiculeArrive" de la séquence consulterConseilS1
             out port plaque;
         }
         part def CameraZone {
@@ -33,7 +33,7 @@ package materielDetectionGuidage {
         part def PanneauLumineux {
             doc /* panneau qui affiche la zone et l'entrée recommandées */
             // existe déjà dans le parking (exigence reutilisationExistant)
-            // port issu du message "afficher" de la séquence obtenirConseilS1
+            // port issu du message "afficher" de la séquence consulterConseilS1
             in port affichage;
         }
          part def BorneClient {

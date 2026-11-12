@@ -2,7 +2,7 @@ package parkingConseil {
     doc /*
      * Mini-projet SysML - Séance 2 : travail individuel (AKICHOUH)
      * Cas d'utilisation traités (issus de la vue des cas d'utilisation du groupe) :
-     *  - obtenirConseilStationnement
+     *  - consulterConseilStationnement
      *  - retrouverVehicule
      */
     private import ScalarValues::Boolean;
@@ -37,13 +37,14 @@ package parkingConseil {
          * prévision d'occupation et le temps total estimé.
          * Exigences : mesureOccupation, previsionAffluence, recommandationZone,
          * reutilisationExistant (panneaux), modeDegrade (panne de la prévision). */
-        action obtenirConseilStationnement {
+        action consulterConseilStationnement {
             attribute vehiculeArrive : Boolean;
             attribute previsionDisponible : Boolean;
             attribute previsionIndisponible : Boolean;
 
             action mesurerOccupation;
             action prevoirOccupation;
+            action basculerModeDegrade;
             action calculerTempsTotalParZone;
             action recommanderZoneEtEntree;
             action afficherRecommandation;
@@ -54,8 +55,9 @@ package parkingConseil {
             succession start if vehiculeArrive then mesurerOccupation;
             then decide0;
                 if previsionDisponible then prevoirOccupation;
-                if previsionIndisponible then merge0;
+                if previsionIndisponible then basculerModeDegrade;
             succession prevoirOccupation then merge0;
+            succession basculerModeDegrade then merge0;
             then calculerTempsTotalParZone;
             then recommanderZoneEtEntree;
             then afficherRecommandation;
@@ -92,8 +94,8 @@ package parkingConseil {
     package sequences {
         private import parkingConseil::parts::*;
 
-        /* obtenirConseilStationnement - S1 : prévision disponible */
-        occurrence obtenirConseilS1 {
+        /* consulterConseilStationnement - S1 : prévision disponible */
+        occurrence consulterConseilS1 {
             part lecteurPlaques : LecteurPlaques;
             part superviseur : Superviseur;
             part capteursPlaces : CapteursPlaces;
@@ -112,8 +114,8 @@ package parkingConseil {
             message from panneauAffichage to superviseur;
         }
 
-        /* obtenirConseilStationnement - S2 : prévision indisponible (mode dégradé) */
-        occurrence obtenirConseilS2 {
+        /* consulterConseilStationnement - S2 : prévision indisponible (mode dégradé) */
+        occurrence consulterConseilS2 {
             part lecteurPlaques : LecteurPlaques;
             part superviseur : Superviseur;
             part capteursPlaces : CapteursPlaces;
